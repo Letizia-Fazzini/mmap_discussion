@@ -1,6 +1,13 @@
 - How did you design your benchmarks?
+We basically utilized a file with length 877130 (number of bytes) and just read
+the entire thing. Obviously, with demand paging, a page fault would occur after 
+every page, causing the program to page fault 200+ times and cause the program to
+read from disk many more times than populating the entire space just once, and reading
+through memory continuously. 
 
 - What performance differences did you see?
+Demand paging took ~0.30447s to complete, while populating
+via mmap took 0.000970291s to complete.
 
 - If you have time / interest, lets try to look at what exactly caused these
 performance differences above. Our hardware has special performance counters
