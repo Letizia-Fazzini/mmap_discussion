@@ -22,18 +22,19 @@ int main(int argc, char** argv){
 
     int fd = open("data", O_RDWR);
 
-    void* addr;
+    uint8_t* addr;
 
     // easy / hacky way to pass cmdline args
     if (argc == 1){
         // do demand paging if no additional args
         printf("Demand paging\n");
-        addr = 0; // TODO
+        
+        addr = (uint8_t*) mmap(nullptr, 877130, PROT_READ | PROT_WRITE | PROT_EXEC, MAP_PRIVATE, fd, 0); // TODO
     }
     else{
         // load all at once if additional args
         printf("Map populate\n");
-        addr = 0; // TODO 
+        addr = (uint8_t*) mmap(nullptr, 877130, PROT_READ | PROT_WRITE | PROT_EXEC, MAP_PRIVATE | MAP_POPULATE, fd, 0);// TODO 
     }
 
     // Always check your return values!
@@ -42,6 +43,10 @@ int main(int argc, char** argv){
     }
 
     // TODO: run benchmark here
+    for(int time = 0; time < 877130; time+= 4096){
+        uint8_t a = addr[time];
+        a++;
+    }
 
     end = std::chrono::system_clock::now();
     std::chrono::duration<double> elapsed_seconds = end - start;
@@ -52,4 +57,3 @@ int main(int argc, char** argv){
     std::cout << "finished computation at " << std::ctime(&end_time) << "elapsed time: " << elapsed_seconds.count() << "s\n";
     munmap(addr, 1);
 }
-
